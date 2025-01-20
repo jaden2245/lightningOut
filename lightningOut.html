@@ -1,5 +1,5 @@
 <html>
-<title>Test 4 with ID Selector</title>
+<title>Test 5 with ID Selector</title>
 <style>
     a {
         color: brown;
@@ -55,8 +55,11 @@
         }
     }
 
-    // Initialize LightningOut
+    // Clear the target element and initialize LightningOut
     async function initializeLightningOut(recordId) {
+        // Clear the previous component
+        targetElement.innerHTML = '';
+
         const accessToken = await fetchAccessToken();
 
         if (!accessToken) {
