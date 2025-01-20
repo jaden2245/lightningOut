@@ -1,5 +1,5 @@
 <html>
-<title>Test 4</title>
+<title>Test 4 with ID Selector</title>
 <style>
     a {
         color: brown;
@@ -8,22 +8,32 @@
 
 <script src="https://marriottintl--dttdev.sandbox.my.salesforce.com/lightning/lightning.out.js"></script>
 
+<div>
+    <label for="idSelector">Choose a Case ID:</label>
+    <select id="idSelector">
+        <option value="5007x00000NJBTyAAP">Case ID 1</option>
+        <option value="5007x00000P01H3AAJ">Case ID 2</option>
+        <option value="5007x00000Ozyz7AAB">Case ID 3</option>
+    </select>
+    <button id="renderButton">Render in LightningOut</button>
+</div>
+
 <div data-lightning-out="true"></div>
 
 <script>
     const appName = 'c:ShowTest';
     const componentName = 'c:caseViewEdit';
     const lightningEndpoint = 'https://marriottintl--dttdev.sandbox.lightning.force.com';
-    const targetElement = document.querySelector("[data-lightning-out]");
-
-    // Configuration for JWT token request
     const tokenUrl = 'https://marriottintl--dttdev.sandbox.my.salesforce.com/services/oauth2/token';
     const jwtToken = 'eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiIzTVZHOW5pM0MwYlVGamtwS3VXVUFtUEpiQlhmZDhxS1huYWdRTjdDR2tUOUVNZThxdFBUb1k1MW9FSldBeFgxRVZfX2w2WnFDZ1FvakloMzVMRF9qIiwic3ViIjoianVsaXVzLmFkZW5pcmFuQG1hcnJpb3R0LXNwLmNvbS5tZ3BxYS5kdHRkZXYiLCJhdWQiOiJodHRwczovL3Rlc3Quc2FsZXNmb3JjZS5jb20iLCJleHAiOiIxOTA5OTkwMjM2In0.pQNAACTHL8Uktat1K2oK_5ZukbH4UFiu571UD5yQhPwqcoJpT85hniyI6aGwtIzVQ-iPJXTMPvMrC45EjRAJm3yiWpRYoZY65gU2HXwTzi1wFtwEIp1EwmVpuirFIlY6YwIzrwPAXEFS1dIJeIekc6VVfeDbOYI70i6T4kA6VbDtsrF2254lQTOA3vrxiyrIkbmDZYWtf-vAJnIYxjKDbsecH3KbxiFX1t_ce9EEQrJjdY_NdkxGM11Z8AvkxIOWR7tm4sijxlv0V86NQsk7tBwODYf77kWPUZFzmy66spey-KY8H3S2ShjlItLD8I_hfsqMGUvhjzzWzfGp8Vd5rQ'; // Replace with your actual JWT assertion
-    const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-    };
+    const targetElement = document.querySelector("[data-lightning-out]");
 
+    // Fetch access token for authentication
     async function fetchAccessToken() {
+        const headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        };
+
         try {
             const response = await fetch(tokenUrl, {
                 method: 'POST',
@@ -45,7 +55,8 @@
         }
     }
 
-    async function initializeLightningOut() {
+    // Initialize LightningOut
+    async function initializeLightningOut(recordId) {
         const accessToken = await fetchAccessToken();
 
         if (!accessToken) {
@@ -53,16 +64,16 @@
             return;
         }
 
-        console.log('Initializing LightningOut with fetched token...');
+        console.log('Initializing LightningOut with recordId:', recordId);
         $Lightning.use(
             appName,
             function () {
                 $Lightning.createComponent(
                     componentName,
-                    {},
+                    { recordId }, // Pass the recordId as an attribute
                     targetElement,
                     function (cmp) {
-                        console.log('Lightning component created successfully!');
+                        console.log('Lightning component created successfully with recordId:', recordId);
                     }
                 );
             },
@@ -71,7 +82,10 @@
         );
     }
 
-    // Initialize the application
-    document.addEventListener('DOMContentLoaded', initializeLightningOut);
+    // Set up event listener for the render button
+    document.getElementById('renderButton').addEventListener('click', () => {
+        const selectedId = document.getElementById('idSelector').value;
+        initializeLightningOut(selectedId);
+    });
 </script>
 </html>
