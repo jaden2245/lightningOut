@@ -1,0 +1,39 @@
+<html>
+
+<title>Test 1</title>
+<style>
+    a {
+        color: brown
+    }
+</style>
+    <script src="https://marriottintl--dttdev.sandbox.my.salesforce.com/lightning/lightning.out.js"></script>
+
+    <div data-lightning-out="true"></div>
+
+    <script>
+
+        const appName = 'c:ShowTest';
+        const token = '00D7x00000824XZ!AQEAQKNXUZ4ZDBduhkjz0rjv8md6_yg60HHxqlvxNXT2OaT43b0AqqVnJHovDqXdDqRuKCFFtTxRH5i4QnF1WDHJ4lEuocy0';
+        const componentName = 'c:caseViewEdit';
+        const lightningEndpoint = 'https://marriottintl--dttdev.sandbox.lightning.force.com';
+        const targetElement = document.querySelector("[data-lightning-out]");
+        const componentAttributes = {};
+
+        $Lightning.use(
+            appName,
+            function(){
+                $Lightning.createComponent(
+                    componentName,
+                    componentAttributes,
+                    targetElement,
+                    function(cmp){
+                        console.log('lightning component created');
+                    }
+                );
+            },
+            lightningEndpoint,
+            token
+        )
+
+    </script>
+</html>
