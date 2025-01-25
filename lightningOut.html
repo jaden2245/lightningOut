@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo of LightningOut with GitHubPage</title>
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="lightningOut.css">
+</head>
+<body>
+    <header class="header">
+        <h1>LightningOut POC</h1>
+        <p>Experience us</p>
+    </header>
+
+    <main class="main-container">
+        <!-- Input fields for dynamic values -->
+        <section class="input-container">
+            <label for="scriptSrc">Script Source (src):</label>
+            <input type="text" id="scriptSrc" placeholder="Enter script source URL (e.g., https://...)" />
+            
+            <label for="lightningEndpoint">Lightning Endpoint:</label>
+            <input type="text" id="lightningEndpoint" placeholder="Enter Lightning Endpoint (e.g., https://...)" />
+            
+            <label for="tokenUrl">Token URL:</label>
+            <input type="text" id="tokenUrl" placeholder="Enter Token URL (e.g., https://...)" />
+            
+            <label for="jwtToken">JWT Token:</label>
+            <input type="text" id="jwtToken" placeholder="Enter JWT Token" />
+            
+            <button id="loadScriptButton" class="primary-button">Load Script</button>
+        </section>
+
+        <section class="selection-container">
+            <label for="idSelector">Choose a Case ID:</label>
+            <select id="idSelector" class="dropdown">
+                <option value="5007x00000NJBTyAAP">Case ID 1</option>
+                <option value="5007x00000OmqbCAAR">Case ID 2</option>
+                <option value="5007x00000NJWtOAAX">Case ID 3</option>
+            </select>
+            <button id="renderButton" class="primary-button" disabled>Render in LightningOut</button>
+        </section>
+
+        <section class="lightning-container">
+            <div data-lightning-out="true"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Rights Reserved.</p>
+    </footer>
+
+    <script>
+        let lightningEndpoint = '';
+        let tokenUrl = '';
+        let jwtToken = '';
+        const appName = 'c:ShowTest';
+        const componentName = 'c:caseViewEdit';
+        const targetElement = document.querySelector("[data-lightning-out]");
+
+        // Load the script dynamically based on user input
+        document.getElementById('loadScriptButton').addEventListener('click', () => {
+            const scriptSrc = document.getElementById('scriptSrc').value;
+            lightningEndpoint = document.getElementById('lightningEndpoint').value;
+            tokenUrl = document.getElementById('tokenUrl').value;
+            jwtToken = document.getElementById('jwtToken').value;
+
+            if (!scriptSrc || !lightningEndpoint || !tokenUrl || !jwtToken) {
+                alert('Please provide all required inputs.');
+                return;
+            }
+
+            // Dynamically load the Lightning Out script
+            const script = document.createElement('script');
+            script.src = scriptSrc;
+            script.onload = () => {
+                console.log('Lightning Out script loaded successfully.');
+                document.getElementById('renderButton').disabled = false;
+            };
+            script.onerror = () => {
+                console.error('Failed to load Lightning Out script. Check the script source URL.');
+            };
+            document.head.appendChild(script);
+        });
+
+        // Initialize Lightning Out with selected record ID
+        async function initializeLightningOut(recordId) {
+            targetElement.innerHTML = ''; // Clear the previous component
+
+            if (!jwtToken) {
+                console.error('JWT Token is not available. LightningOut cannot be initialized.');
+                return;
+            }
+
+            console.log('Initializing Lightning Out with recordId:', recordId);
+            $Lightning.use(
+                appName,
+                function () {
+                    $Lightning.createComponent(
+                        componentName,
+                        { recordId },
+                        targetElement,
+                        function (cmp) {
+                            console.log('Lightning component created successfully with recordId:', recordId);
+                        }
+                    );
+                },
+                lightningEndpoint,
+                jwtToken
+            );
+        }
+
+        // Handle Render Button click
+        document.getElementById('renderButton').addEventListener('click', () => {
+            const selectedId = document.getElementById('idSelector').value;
+            initializeLightningOut(selectedId);
+        });
+    </script>
+</body>
+</html>
