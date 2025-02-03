@@ -8,7 +8,7 @@
 </head>
 <body>
     <header class="header">
-        <h1>LightningOut POC 2</h1>
+        <h1>LightningOut POC 3</h1>
         <p>Experience us</p>
     </header>
 
@@ -26,6 +26,12 @@
             
             <label for="jwtToken">JWT Token:</label>
             <input type="text" id="jwtToken" placeholder="Enter JWT Token" />
+
+            <label for="appName">App Name:</label>
+            <input type="text" id="appName" placeholder="Enter App Name" />
+
+            <label for="componentName">Component Name:</label>
+            <input type="text" id="componentName" placeholder="Enter Component Name" />
             
             <button id="loadScriptButton" class="primary-button">Load Script</button>
         </section>
@@ -53,8 +59,8 @@
         let lightningEndpoint = '';
         let tokenUrl = '';
         let jwtToken = '';
-        const appName = 'c:ShowTest';
-        const componentName = 'c:spogLightningOutRouter';
+        const appName = '';
+        const componentName = '';
         const targetElement = document.querySelector("[data-lightning-out]");
 
         // Load the script dynamically based on user input
@@ -63,8 +69,10 @@
             lightningEndpoint = document.getElementById('lightningEndpoint').value;
             tokenUrl = document.getElementById('tokenUrl').value;
             jwtToken = document.getElementById('jwtToken').value;
+            appName = document.getElementById('appName').value;
+            componentName = document.getElementById('componentName').value;
 
-            if (!scriptSrc || !lightningEndpoint || !tokenUrl || !jwtToken) {
+            if (!scriptSrc || !lightningEndpoint || !tokenUrl || !jwtToken || !appName || !componentName) {
                 alert('Please provide all required inputs.');
                 return;
             }
